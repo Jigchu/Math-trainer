@@ -1,2 +1,2 @@
 # Ignore tests
-./cmd-line/test/
+test/
