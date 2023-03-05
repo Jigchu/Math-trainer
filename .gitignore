@@ -1,2 +1,5 @@
 # Ignore tests
 test
+
+# Ignore executables
+*.exe
