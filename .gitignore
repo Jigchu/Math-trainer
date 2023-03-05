@@ -1,5 +1,6 @@
 # Ignore tests
 test
+.vscode
 
 # Ignore executables
 *.exe
