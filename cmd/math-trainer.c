@@ -8,7 +8,7 @@
 // Macro for array size
 #define ARRAY_SIZE(arr)     (sizeof(arr) / sizeof((arr)[0]))
 
-int main(int argc, char **argv)
+int main(int argc, char *const *argv)
 {
     // Make getopt not write anything to stderr
     opterr = 0;
@@ -18,8 +18,8 @@ int main(int argc, char **argv)
     
     if (options == NULL)
     {
-        printf("Could not open options.txt\n");
-        printf("Perhaps you misplaced it? (It should be in the config folder)\n");
+        fprintf(stderr, "Could not open options.txt\n");
+        fprintf(stderr, "Perhaps you misplaced it? (It should be in the config folder)\n");
 
         exit(1);
     }
@@ -33,7 +33,7 @@ int main(int argc, char **argv)
 
     if (optstr == NULL)
     {
-        printf("Could not allocate memory for options\n");
+        fprintf(stderr, "Could not allocate memory for options\n");
 
         fclose(options);
 
@@ -43,19 +43,21 @@ int main(int argc, char **argv)
     fread(optstr, sizeof(char), len, options);
     optstr[len] = '\0';
 
+    // Close option file
+    fclose(options);
+
     // Long options
     static struct option longopts[] = {
         {"archive", no_argument, NULL, 257},
         {"remember", no_argument, NULL, 258},
     };
 
-    int optlen = len + ARRAY_SIZE(longopts);
     int long_index = -1;
 
     // Input parsing 
 
     // Getting the options
-    int *opts = malloc((optlen + 1) * sizeof(int));                 /*Stores all the options in argv*/
+    int *opts = malloc(sizeof(int));                 /*Stores all the options in argv*/
     int i = 0;                                                      /*Iterable variable*/
     
     while (true)
@@ -69,7 +71,6 @@ int main(int argc, char **argv)
 
             free(optstr);
             free(opts);
-            fclose(options);
 
             exit(3);
         }
@@ -80,19 +81,35 @@ int main(int argc, char **argv)
             break;
         }    
         
+        // Allocates more memory with realloc
         i++;
+
+        int *temp = realloc(opts, i + 1);
+
+        if (temp == NULL)
+        {
+            fprintf(stderr, "Could not reallocate memory\n");
+
+            free(opts);
+            free(optstr);
+
+            exit(4);
+        }
+
+        opts = temp;
     }
+
+    // Frees optstr
+    free(optstr);
 
     // Checks if no options are inputted
     if (i == 0)
     {
-        printf("No options inputted\n");
+        fprintf(stderr, "No options inputted\n");
         
-        free(optstr);
         free(opts);
-        fclose(options);
 
-        exit(4);
+        exit(5);
     }
 
     // Getting all other values
@@ -100,13 +117,11 @@ int main(int argc, char **argv)
     // Prevent integer overflow
     if (atoll(argv[optind]) > INT_MAX)
     {
-        printf("Integer overflow: please input something less or equal to %d\n", INT_MAX);
-        
-        free(optstr);
-        free(opts);
-        fclose(options);
+        fprintf(stderr, "Integer overflow: please input something less or equal to %d\n", INT_MAX);
 
-        exit(5);
+        free(opts);
+
+        exit(6);
     }
 
     int q_num = atoi(argv[optind]);
@@ -117,8 +132,6 @@ int main(int argc, char **argv)
     .
     .
     */
-
-    // Archival system
 
     // Frees all memory
     free(optstr);
