@@ -12,7 +12,7 @@ typedef struct question
 } question;
 
 // Function prototypes
-question *create_qsets(int *topics, int max_q);
-void free_qset(question *qset, int max_q);
+question *create_qset(int *topics, int q_num);
+void free_qset(question *qset, int q_num);
 
 #endif
