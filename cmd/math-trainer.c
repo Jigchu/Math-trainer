@@ -13,7 +13,7 @@
 #define ARRAY_SIZE(arr)     (sizeof(arr) / sizeof((arr)[0]))
 
 // Function Prototypes (These are usually for input parsing)
-int *get_topic(int *opts, int len);
+int *get_topic(int *opts, int lopt_index);
 static int *sort(int *opts, int len);
 
 int main(int argc, char *const *argv)
@@ -162,7 +162,7 @@ int main(int argc, char *const *argv)
 
 
 // Implementation of binary search to search for topics
-int *get_topic(int *opts, int len)
+int *get_topic(int *opts, int lopt_index)
 {
     return NULL;
 }
