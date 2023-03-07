@@ -7,8 +7,14 @@
 #include <stdlib.h>
 #include <string.h>
 
+#include "questions.h"
+
 // Macro for array size
 #define ARRAY_SIZE(arr)     (sizeof(arr) / sizeof((arr)[0]))
+
+// Function Prototypes (These are usually for input parsing)
+int *get_topic(int *opts, int len);
+static int *sort(int *opts, int len);
 
 int main(int argc, char *const *argv)
 {
@@ -142,17 +148,27 @@ int main(int argc, char *const *argv)
 
     int q_num = atoi(argv[optind]);
 
-    // The equation generation part
-    /*
-    .
-    .
-    .
-    */
+    // Generates the question set
+    int *topics = NULL;
+
+    //question *qset = create_qset(topics, q_num);
 
     // Frees all memory
-    free(optstr);
     free(opts);
-    fclose(options);
+    free(topics);
 
     exit(EXIT_SUCCESS);
+}
+
+
+// Implementation of binary search to search for topics
+int *get_topic(int *opts, int len)
+{
+    return NULL;
+}
+
+// Merge sort using recursion so that binary sort is possible
+static int *sort(int *opts, int len)
+{
+    return NULL;
 }
