@@ -1,7 +1,7 @@
 # Ignore tests and makefiles
 test
-makefile.mk
+makefile
 .vscode
 
-# Ignore executables
+# Ignore executables and makefiles (just in case)
 *.exe
