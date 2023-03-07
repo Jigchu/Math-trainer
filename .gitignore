@@ -3,5 +3,5 @@ test
 makefile
 .vscode
 
-# Ignore executables
+# Ignore executables and makefiles (just in case)
 *.exe
