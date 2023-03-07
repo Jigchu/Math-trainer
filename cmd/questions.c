@@ -5,5 +5,14 @@
 
 #include "questions.h"
 
-question *create_qsets(int *topics, int max, int min, int max_q);
-void free_qset(question *qset, int max_q);
+// Generates question set using recursion
+question *create_qsets(int *topics, int max_q)
+{
+
+}
+
+// Frees question set using recursion
+void free_qset(question *qset, int max_q)
+{
+
+}

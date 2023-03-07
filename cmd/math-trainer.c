@@ -1,9 +1,11 @@
+#include <ctype.h>
 #include <getopt.h>
 #include <unistd.h>
 #include <stdbool.h>
 #include <stdint.h>
 #include <stdio.h>
 #include <stdlib.h>
+#include <string.h>
 
 // Macro for array size
 #define ARRAY_SIZE(arr)     (sizeof(arr) / sizeof((arr)[0]))
@@ -58,7 +60,7 @@ int main(int argc, char *const *argv)
 
     // Getting the options
     int *opts = malloc(sizeof(int));                 /*Stores all the options in argv*/
-    int i = 0;                                                      /*Iterable variable*/
+    int i = 0;                                       /*Iterable variable*/
     
     while (true)
     {
@@ -84,7 +86,7 @@ int main(int argc, char *const *argv)
         // Allocates more memory with realloc
         i++;
 
-        int *temp = realloc(opts, i + 1);
+        int *temp = realloc(opts, (i + 1) * sizeof(int));
 
         if (temp == NULL)
         {
@@ -113,6 +115,20 @@ int main(int argc, char *const *argv)
     }
 
     // Getting all other values
+    char *tmp = argv[optind];
+
+    // Prevent non numerical characters
+    for (int j = 0, len = strlen(tmp); i < len; i++)
+    {
+        if (!isdigit(tmp[j]))
+        {
+            fprintf(stderr, "Typed character instead of an integer\n");
+            
+            free(opts);
+
+            exit(6);
+        }
+    }
 
     // Prevent integer overflow
     if (atoll(argv[optind]) > INT_MAX)
@@ -121,7 +137,7 @@ int main(int argc, char *const *argv)
 
         free(opts);
 
-        exit(6);
+        exit(7);
     }
 
     int q_num = atoi(argv[optind]);
