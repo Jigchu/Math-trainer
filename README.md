@@ -58,3 +58,4 @@ By the way at the start of `main`, I set `opterr` to `0` to prevent `getopt_long
 
 **If you want to find out more about the family of `getopts`, you should visit the Linux man pages. Here is the [link](https://linux.die.net/man/3/getopt_long)**
 
+The last part of getting the options is actually getting the options themmselves.
