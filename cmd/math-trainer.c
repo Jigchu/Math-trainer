@@ -123,6 +123,8 @@ int main(int argc, char *const *argv)
     }
 
     // Getting all other values
+
+    // Checks if the number has a char
     if (has_char(argv[optind]))
     {
         fprintf(stderr, "%s has a character\n", argv[optind]);
