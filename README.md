@@ -54,7 +54,7 @@ Where, `name` is the name of the long option, `has_arg` being whether the option
 
 ***Note: Due to how `getop_long()` is coded, it is mandatory to fill the last value in your pointer or list with `{0, 0, 0, 0}`***
 
-By the way at the start of `main`, I set `opterr` to `0` to prevent `getopt_long()` from printing its own error messages. Lastly, I created a variable `long_index` which will be set by `getopt_long` to the index of the long option that has been found relative to `longopts`. It does not have much use but I may need to use it later. 
+By the way, at the start of `main`, I set `opterr` to `0` to prevent `getopt_long()` from printing its own error messages. Lastly, I created a variable `long_index` which will be set by `getopt_long` to the index of the long option that has been found relative to `longopts`. It does not have much use but I may need to use it later. 
 
 **If you want to find out more about the family of `getopts`, you should visit the Linux man pages. Here is the [link](https://linux.die.net/man/3/getopt_long)**
 
