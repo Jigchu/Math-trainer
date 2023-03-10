@@ -14,7 +14,8 @@
 
 // Function Prototypes (These are usually for input parsing)
 int *get_topic(int *opts, int lopt_index);
-static int *sort(int *opts, int len);
+int *sort(int *opts, int len);
+bool havec(const char *number);
 
 int main(int argc, char *const *argv)
 {
@@ -58,6 +59,7 @@ int main(int argc, char *const *argv)
     static struct option longopts[] = {
         {"archive", no_argument, NULL, 257},
         {"remember", no_argument, NULL, 258},
+        {0, 0, 0, 0}
     };
 
     int long_index = -1;
@@ -65,17 +67,17 @@ int main(int argc, char *const *argv)
     // Input parsing 
 
     // Getting the options
-    int *opts = malloc(sizeof(int));                 /*Stores all the options in argv*/
-    int i = 0;                                       /*Iterable variable*/
+    int *opts = malloc(1 * sizeof(int));                 /*Stores all the options in argv*/
+    int optlen = 0;                                      /*Iterable variable*/
     
     while (true)
     {
-        opts[i] = getopt_long(argc, argv, optstr, longopts, &long_index);
+        opts[optlen] = getopt_long(argc, argv, optstr, longopts, &long_index);
 
         // Checks for invalid option
-        if (opts[i] == '?')
+        if (opts[optlen] == '?')
         {
-            printf("Invalid option\n");
+            printf("Invalid option %s\n", argv[optind - 1]);
 
             free(optstr);
             free(opts);
@@ -84,15 +86,15 @@ int main(int argc, char *const *argv)
         }
 
         // Checks for the end of options
-        if (opts[i] == -1)
+        if (opts[optlen] == -1)
         {
             break;
         }    
         
         // Allocates more memory with realloc
-        i++;
+        optlen++;
 
-        int *temp = realloc(opts, (i + 1) * sizeof(int));
+        int *temp = realloc(opts, (optlen + 1) * sizeof(int));
 
         if (temp == NULL)
         {
@@ -111,7 +113,7 @@ int main(int argc, char *const *argv)
     free(optstr);
 
     // Checks if no options are inputted
-    if (i == 0)
+    if (optlen == 0)
     {
         fprintf(stderr, "No options inputted\n");
         
@@ -119,27 +121,20 @@ int main(int argc, char *const *argv)
 
         exit(5);
     }
-
-    // Getting all other values
-    char *tmp = argv[optind];
-
-    // Prevent non numerical characters
-    for (int j = 0, len = strlen(tmp); i < len; i++)
+    
+    if (havec(argv[optind]))
     {
-        if (!isdigit(tmp[j]))
-        {
-            fprintf(stderr, "Typed character instead of an integer\n");
+        fprintf(stderr, "Characters present in %s\n", argv[optind]);
             
             free(opts);
 
             exit(6);
-        }
     }
 
     // Prevent integer overflow
     if (atoll(argv[optind]) > INT_MAX)
     {
-        fprintf(stderr, "Integer overflow: please input something less or equal to %d\n", INT_MAX);
+        fprintf(stderr, "Integer overflow: %s is larger than %d\n", argv[optind], INT_MAX);
 
         free(opts);
 
@@ -161,6 +156,20 @@ int main(int argc, char *const *argv)
 }
 
 
+// Checks if number has a char
+bool havec(const char *number)
+{
+    for (int i = 0, len = strlen(number); i < len; i++)
+    {
+        if (!isdigit(number[i]))
+        {
+            return true;
+        }
+    }
+
+    return false;
+}
+
 // Implementation of binary search to search for topics
 int *get_topic(int *opts, int lopt_index)
 {
@@ -168,7 +177,7 @@ int *get_topic(int *opts, int lopt_index)
 }
 
 // Merge sort using recursion so that binary sort is possible
-static int *sort(int *opts, int len)
+int *sort(int *opts, int len)
 {
     return NULL;
 }
