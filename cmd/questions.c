@@ -6,7 +6,7 @@
 #include "questions.h"
 
 // Generates question set using recursion
-question *create_qsets(int *topics, int q_num)
+question *create_qset(int *topics, int q_num)
 {
     // Break case
     if (q_num < 1)

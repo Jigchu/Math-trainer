@@ -38,6 +38,12 @@ int main(int argc, char *const *argv)
     int len = ftell(options);
     fseek(options, 0, SEEK_SET);
 
+    if (len == 0)
+    {
+        fprintf(stderr, "There are no options in config/options.txt\n");
+        exit(2);
+    }
+
     char *optstr = malloc(sizeof(char) * (len + 1));
 
     if (optstr == NULL)
@@ -46,7 +52,7 @@ int main(int argc, char *const *argv)
 
         fclose(options);
 
-        exit(2);
+        exit(3);
     }
 
     fread(optstr, sizeof(char), len, options);
@@ -82,7 +88,7 @@ int main(int argc, char *const *argv)
             free(optstr);
             free(opts);
 
-            exit(3);
+            exit(4);
         }
 
         // Checks for the end of options
@@ -103,7 +109,7 @@ int main(int argc, char *const *argv)
             free(opts);
             free(optstr);
 
-            exit(4);
+            exit(5);
         }
 
         opts = temp;
@@ -119,7 +125,7 @@ int main(int argc, char *const *argv)
         
         free(opts);
 
-        exit(5);
+        exit(6);
     }
 
     // Getting all other values
@@ -131,7 +137,7 @@ int main(int argc, char *const *argv)
 
         free(opts);
 
-        exit(6);
+        exit(7);
     }
     
 
@@ -142,7 +148,7 @@ int main(int argc, char *const *argv)
 
         free(opts);
 
-        exit(7);
+        exit(8);
     }
 
     int q_num = atoi(argv[optind]);
