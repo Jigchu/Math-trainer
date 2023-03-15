@@ -1,5 +1,4 @@
 # Ignore tests and makefiles
-test
 .vscode
 
 # Ignore executables and makefiles (just in case)
