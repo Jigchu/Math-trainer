@@ -17,6 +17,8 @@ fseek(options, 0, SEEK_END);
 int len = ftell(options);
 fseek(options, 0, SEEK_SET);
 
+/* Error Handling */
+
 char *optstr = malloc(sizeof(char) * (len + 1));
 
 /* Error Handling */
