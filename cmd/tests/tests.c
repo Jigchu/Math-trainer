@@ -34,11 +34,13 @@ void create_t(int q_num)
     {
         green();
         fprintf(stdout, ":) create_qset able to generate %d questions successfully\n", q_num);
+        reset();
     }
     else
     {
         red();
         fprintf(stdout, ":( create_qset unable to generate %d questions successfully. Only generated %d questions\n", q_num, qctr);
+        reset();
     }
 
     return;
