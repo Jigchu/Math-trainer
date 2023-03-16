@@ -15,7 +15,7 @@
 // Function Prototypes (These are usually for input parsing)
 bool has_char(char *word);
 int *get_topic(int *opts, int lopt_index);
-static int *sort(int *opts, int len);
+int *sort(int *opts, int len);
 
 int main(int argc, char *const *argv)
 {
@@ -187,7 +187,7 @@ int *get_topic(int *opts, int lopt_index)
 }
 
 // Merge sort using recursion so that binary sort is possible
-static int *sort(int *opts, int len)
+int *sort(int *opts, int len)
 {
     return NULL;
 }
