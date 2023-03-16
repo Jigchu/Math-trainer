@@ -4,3 +4,4 @@
 # Ignore executables and makefiles (just in case)
 *.exe
 *.mk
+*.sh
