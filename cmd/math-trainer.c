@@ -14,6 +14,7 @@
 
 // Function Prototypes (These are usually for input parsing)
 bool has_char(char *word);
+int *get_topics(int *opts, int optlen);
 
 int main(int argc, char *const *argv)
 {
@@ -42,11 +43,11 @@ int main(int argc, char *const *argv)
         exit(2);
     }
 
-    char *optstr = malloc(sizeof(char) * (len + 1));
+    char *optstr = malloc((len + 1) * sizeof(char));
 
     if (optstr == NULL)
     {
-        fprintf(stderr, "Could not allocate memory for options\n");
+        fprintf(stderr, "Could not allocate memory for option string\n");
 
         fclose(options);
 
@@ -61,8 +62,8 @@ int main(int argc, char *const *argv)
 
     // Long options
     static struct option longopts[] = {
-        {"archive", no_argument, NULL, 257},
-        {"remember", no_argument, NULL, 258},
+        {"archive", no_argument, NULL, 256},
+        {"remember", no_argument, NULL, 257},
         {0, 0, 0, 0}
     };
 
@@ -71,11 +72,19 @@ int main(int argc, char *const *argv)
     // Input parsing 
 
     // Getting the options
-    int *opts = malloc(sizeof(int));                 /*Stores all the options in argv*/
+    int *opts = malloc(1 * sizeof(int));
+
+    if (opts == NULL)
+    {
+        fprintf(stderr, "Could not allocate memory for options\n");
+
+        exit(3);
+    }
+
     int optlen = 0;                                       /*Iterable variable*/
     
     while (true)
-    {
+    {   
         opts[optlen] = getopt_long(argc, argv, optstr, longopts, &long_index);
 
         // Checks for invalid option
@@ -95,9 +104,9 @@ int main(int argc, char *const *argv)
             break;
         }    
         
-        // Allocates more memory with realloc
         optlen++;
 
+        // Allocates more memory with realloc
         int *temp = realloc(opts, (optlen + 1) * sizeof(int));
 
         if (temp == NULL)
@@ -128,6 +137,16 @@ int main(int argc, char *const *argv)
 
     // Getting all other values
 
+    // Checks if the user has included the total question
+    if (argc <= optind)
+    {
+        fprintf(stderr, "Usage: ./math-trainer -[topics] --[extra long options] [total questions]\n");
+
+        free(opts);
+
+        exit(7);
+    }
+
     // Checks if the number has a char
     if (has_char(argv[optind]))
     {
@@ -135,7 +154,7 @@ int main(int argc, char *const *argv)
 
         free(opts);
 
-        exit(7);
+        exit(8);
     }
     
 
@@ -146,19 +165,39 @@ int main(int argc, char *const *argv)
 
         free(opts);
 
-        exit(8);
+        exit(9);
     }
 
     int q_num = atoi(argv[optind]);
 
     // Generates the question set
-    int *topics = NULL;
+    int *topics = get_topics(opts, optlen);
 
-    //question *qset = create_qset(topics, q_num);
+    if (topics == NULL)
+    {
+        fprintf(stderr, "Could not allocate memory for topics\n");
+
+        free(opts);
+
+        exit(10);
+    }
+
+    if (topics[0] <= 1)
+    {
+        fprintf(stderr, "Did not input any topics\n");
+        fprintf(stderr, "Usage: ./math-trainer -[topics] --[extra long options] [total questions]\n");
+
+        free(opts);
+
+        exit(11);
+    }
+
+    question *qset = create_qset(topics, q_num);
 
     // Frees all memory
     free(opts);
     free(topics);
+    free(qset);
 
     exit(EXIT_SUCCESS);
 }
@@ -176,4 +215,53 @@ bool has_char(char *word)
     }
 
     return false;
+}
+
+int *get_topics(int *options, int optlen)
+{
+    // Pointer to store the topics
+    int *topics = malloc(1 * sizeof(int));
+
+    if (topics == NULL)
+    {
+        return NULL;
+    }
+
+    // Record the length
+    int len = 1;
+
+    for (int i = 0; i < optlen; i++)
+    {
+        // Check if it is a shortopt or longopt
+        int option = options[i];
+
+        if (option < 256)
+        {
+            // Reallocate memory with realloc
+            int *tmp = realloc(topics, (len + 1) * sizeof(int));
+
+            if (tmp == NULL)
+            {
+                // Free memory used by function
+                if (topics != NULL)
+                {
+                    free(topics);
+                }
+
+                return NULL;
+            }
+
+            topics = tmp;
+
+            // Adds topic
+            topics[i + 1] = option;
+
+            len++;
+        }
+    }
+
+    // Store the metadata
+    topics[0] = len;
+
+    return topics;
 }

@@ -31,7 +31,7 @@ question *create_qset(int *topics, int q_num)
         if (next == NULL)
         {
             // Free the question set
-            free_qset(head, i);
+            free_qset(head);
 
             return NULL;
         }
@@ -57,7 +57,22 @@ question *create_qset(int *topics, int q_num)
 }
 
 // Frees question set using recursion
-void free_qset(question *qset, int q_num)
+void free_qset(question *qset)
 {
+    // Break Case
+    if (qset == NULL)
+    {
+        return;
+    }
+
+    // Gets the next question
+    question *next = qset->next;
+
+    // Free the next question and all the questions following it
+    free_qset(next);
+
+    // Free the current question
+    free(qset);
+
     return;
 }

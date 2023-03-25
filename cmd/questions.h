@@ -13,6 +13,6 @@ typedef struct question
 
 // Function prototypes
 question *create_qset(int *topics, int q_num);
-void free_qset(question *qset, int q_num);
+void free_qset(question *qset);
 
 #endif
