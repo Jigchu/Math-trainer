@@ -14,8 +14,6 @@
 
 // Function Prototypes (These are usually for input parsing)
 bool has_char(char *word);
-int *get_topic(int *opts, int lopt_index);
-int *sort(int *opts, int len);
 
 int main(int argc, char *const *argv)
 {
@@ -178,16 +176,4 @@ bool has_char(char *word)
     }
 
     return false;
-}
-
-// Implementation of binary search to search for topics
-int *get_topic(int *opts, int lopt_index)
-{
-    return NULL;
-}
-
-// Merge sort using recursion so that binary sort is possible
-int *sort(int *opts, int len)
-{
-    return NULL;
 }

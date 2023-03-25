@@ -5,49 +5,59 @@
 
 #include "questions.h"
 
-// Generates question set using recursion
+// Generates question set using iteration so as to save space
 question *create_qset(int *topics, int q_num)
 {
-    // Break case
-    if (q_num < 1)
-    {
-        return NULL;
-    }
-
     // Allocate space for question
-    question *q = malloc(sizeof(question));
+    question *head = malloc(sizeof(question));
     
-    if (q == NULL)
+    if (head == NULL)
     {
         return NULL;
     }
 
-    // Gets te next question
-    question *next = create_qset(topics, (q_num -1));
+    // Setting the head's next
+    head->next = NULL;
 
-    // Error handling for malloc
-    if (next == NULL && q_num != 1)
+    // Variable to keep track of the current allocated question
+    question *current = head;
+
+    // Generates the rest of the question set
+    for (int i = 1; i < q_num; i++)
     {
-        free(q);
+        // Gets te next question
+        question *next = malloc(sizeof(question));
+    
+        if (next == NULL)
+        {
+            // Free the question set
+            free_qset(head, i);
 
-        return NULL;
+            return NULL;
+        }
+
+        // Setting the head's next
+        next->next = NULL;
+
+        // Generate prompts and answers
+        /*
+        *.
+        *.
+        *.
+        */
+
+        // Set the next question
+        current->next = next;
+
+        // Set the current question
+        current = next;
     }
 
-    // Generate prompts and answers
-    /*
-    .
-    .
-    .
-    */
-
-    // Set the next question
-    q->next = next;
-
-    return q;
+    return head;
 }
 
 // Frees question set using recursion
 void free_qset(question *qset, int q_num)
 {
-
+    return;
 }

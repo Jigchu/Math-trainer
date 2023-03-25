@@ -8,8 +8,11 @@ void create_t(int q_num);
 
 int main(void)
 {
+    // Tests for question set generation
+    create_t(1);
     create_t(10);
     create_t(100);
+    create_t(1000);
 
     return 0;
 }
@@ -18,7 +21,16 @@ int main(void)
 // Tests if create_qset is able to able to allocate memory for question nodes (Does not check contents)
 void create_t(int q_num)
 {
-    question *qset = create_qset("q", q_num);
+    int topics[] = {'q'};
+
+    question *qset = create_qset(topics, q_num);
+
+    if (qset == NULL)
+    {
+        red();
+        fprintf(stdout, ":( Memory could not be allocated succesfully\n");
+        reset();
+    }
 
     int qctr = 0;
 
