@@ -16,8 +16,10 @@ question *create_qset(int *topics, int q_num)
         return NULL;
     }
 
-    // Setting the head's next
+    // Zeroing all values
     head->next = NULL;
+    head->answer = NULL;
+    head->prompt = NULL;
 
     // Variable to keep track of the current allocated question
     question *current = head;
@@ -36,8 +38,10 @@ question *create_qset(int *topics, int q_num)
             return NULL;
         }
 
-        // Setting the head's next
+        // Zeroing all values
         next->next = NULL;
+        next->answer = NULL;
+        next->prompt = NULL;
 
         // Generate prompts and answers
         /*
@@ -71,7 +75,19 @@ void free_qset(question *qset)
     // Free the next question and all the questions following it
     free_qset(next);
 
-    // Free the current question
+    // Zero and free the current question and al its data
+    if (qset->answer != NULL)
+    {
+        free(qset->answer);
+    }
+
+    if (qset->prompt != NULL)
+    {
+        free(qset->prompt);
+    }
+    
+    qset->next = NULL;
+
     free(qset);
 
     return;
