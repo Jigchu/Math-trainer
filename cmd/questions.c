@@ -60,35 +60,34 @@ question *create_qset(int *topics, int q_num)
     return head;
 }
 
-// Frees question set using recursion
+// Frees question set using Iteration
 void free_qset(question *qset)
 {
-    // Break Case
-    if (qset == NULL)
+    question *temp = NULL;
+
+    // Loop
+    while (qset != NULL)
     {
-        return;
+        // Zeroing and freeing all values
+        if (qset->answer != NULL)
+        {
+            free(qset->answer);
+            qset->answer = NULL;
+        }
+
+        if (qset->prompt != NULL)
+        {
+            free(qset->prompt);
+            qset->prompt = NULL;
+        }
+
+        // Freeing actual node
+        temp = qset;
+        qset = temp->next;
+
+        free(temp);
+        temp = NULL;
     }
-
-    // Gets the next question
-    question *next = qset->next;
-
-    // Free the next question and all the questions following it
-    free_qset(next);
-
-    // Zero and free the current question and al its data
-    if (qset->answer != NULL)
-    {
-        free(qset->answer);
-    }
-
-    if (qset->prompt != NULL)
-    {
-        free(qset->prompt);
-    }
-    
-    qset->next = NULL;
-
-    free(qset);
 
     return;
 }
