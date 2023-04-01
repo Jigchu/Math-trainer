@@ -13,6 +13,7 @@
 #define ARRAY_SIZE(arr)     (sizeof(arr) / sizeof((arr)[0]))
 
 // Function Prototypes (These are usually for input parsing)
+int *get_options(int argc, char *const *argv, char *optstr, struct option *longopts);
 bool has_char(char *word);
 int *get_topics(int *opts, int optlen);
 
@@ -67,70 +68,42 @@ int main(int argc, char *const *argv)
         {0, 0, 0, 0}
     };
 
-    int long_index = -1;
+    // Input parsing
 
-    // Input parsing 
+    // Gets options
+    int *opts = get_options(argc, argv, optstr, longopts);
 
-    // Getting the options
-    int *opts = malloc(1 * sizeof(int));
+    // Frees optstr
+    free(optstr);
 
-    if (opts == NULL)
+    // Errors handling for get_options
+
+    // Memory allocation problems
+    if (*opts == -1)
     {
         fprintf(stderr, "Could not allocate memory for options\n");
 
         exit(3);
     }
 
-    int optlen = 0;                                       /*Iterable variable*/
-    
-    while (true)
-    {   
-        opts[optlen] = getopt_long(argc, argv, optstr, longopts, &long_index);
+    if (*opts == -3)
+    {
+        fprintf(stderr, "Could not reallocate memory\n");
 
-        // Checks for invalid option
-        if (opts[optlen] == '?')
-        {
-            printf("Invalid option %s\n", argv[optind]);
-
-            free(optstr);
-            free(opts);
-
-            exit(4);
-        }
-
-        // Checks for the end of options
-        if (opts[optlen] == -1)
-        {
-            break;
-        }    
-        
-        optlen++;
-
-        // Allocates more memory with realloc
-        int *temp = realloc(opts, (optlen + 1) * sizeof(int));
-
-        if (temp == NULL)
-        {
-            fprintf(stderr, "Could not reallocate memory\n");
-
-            free(opts);
-            free(optstr);
-
-            exit(5);
-        }
-
-        opts = temp;
+        exit(4);
     }
 
-    // Frees optstr
-    free(optstr);
+    // Errors with input
+    if (*opts == -2)
+    {
+        fprintf(stderr, "Invalid option %s\n", argv[optind]);
 
-    // Checks if no options are inputted
-    if (optlen == 0)
+        exit(5);
+    }
+
+    if (*opts == -4)
     {
         fprintf(stderr, "No options inputted\n");
-        
-        free(opts);
 
         exit(6);
     }
@@ -171,7 +144,7 @@ int main(int argc, char *const *argv)
     int q_num = atoi(argv[optind]);
 
     // Generates the question set
-    int *topics = get_topics(opts, optlen);
+    int *topics = get_topics(opts, opts[0]);
 
     if (topics == NULL)
     {
@@ -202,6 +175,74 @@ int main(int argc, char *const *argv)
     exit(EXIT_SUCCESS);
 }
 
+int *get_options(int argc, char *const *argv, char *optstr, struct option *longopts)
+{
+    // temporary value for longopt to use
+    int tmp = -1;
+
+    // Getting the options
+    int *opts = malloc(2 * sizeof(int));
+
+    if (opts == NULL)
+    {
+        int error = -1;
+
+        return &error;
+    }
+
+    int optlen = 1;                                       /*Iterable variable*/
+    
+    while (true)
+    {   
+        opts[optlen] = getopt_long(argc, argv, optstr, longopts, &tmp);
+
+        // Checks for invalid option
+        if (opts[optlen] == '?')
+        {
+            int error = -2;
+
+            free(opts);
+
+            return &error;
+        }
+
+        // Checks for the end of options
+        if (opts[optlen] == -1)
+        {
+            break;
+        }    
+        
+        optlen++;
+
+        // Allocates more memory with realloc
+        int *temp = realloc(opts, (optlen + 1) * sizeof(int));
+
+        if (temp == NULL)
+        {
+            int error = -3;
+
+            free(opts);
+
+            return &error;
+        }
+
+        opts = temp;
+    }
+
+    // Checks if no options are inputted
+    if (optlen == 0)
+    {
+        int error = -4;
+        
+        free(opts);
+
+        return &error;
+    }
+
+    opts[0] = optlen;
+
+    return opts;
+}
 
 // Checks if a string has a char
 bool has_char(char *word)
@@ -230,7 +271,7 @@ int *get_topics(int *options, int optlen)
     // Record the length
     int len = 1;
 
-    for (int i = 0; i < optlen; i++)
+    for (int i = 1; i < optlen; i++)
     {
         // Check if it is a shortopt or longopt
         int option = options[i];
