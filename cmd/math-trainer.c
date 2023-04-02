@@ -13,9 +13,9 @@
 #define ARRAY_SIZE(arr)     (sizeof(arr) / sizeof((arr)[0]))
 
 // Function Prototypes (These are usually for input parsing)
-int *get_options(int argc, char *const *argv, char *optstr, struct option *longopts);
-bool has_char(char *word);
-int *get_topics(int *opts, int optlen);
+static void *get_options(int argc, char *const *argv, char *optstr, struct option *longopts);
+static bool has_char(char *word);
+static int *get_topics(int *opts, int optlen);
 
 int main(int argc, char *const *argv)
 {
@@ -71,7 +71,7 @@ int main(int argc, char *const *argv)
     // Input parsing
 
     // Gets options
-    int *opts = get_options(argc, argv, optstr, longopts);
+    void *tmp = get_options(argc, argv, optstr, longopts);
 
     // Frees optstr
     free(optstr);
@@ -79,14 +79,14 @@ int main(int argc, char *const *argv)
     // Errors handling for get_options
 
     // Memory allocation problems
-    if (*opts == -1)
+    if (atoi(tmp) == -1)
     {
         fprintf(stderr, "Could not allocate memory for options\n");
 
         exit(3);
     }
 
-    if (*opts == -3)
+    if (atoi(tmp) == -3)
     {
         fprintf(stderr, "Could not reallocate memory\n");
 
@@ -94,19 +94,21 @@ int main(int argc, char *const *argv)
     }
 
     // Errors with input
-    if (*opts == -2)
+    if (atoi(tmp) == -2)
     {
         fprintf(stderr, "Invalid option %s\n", argv[optind]);
 
         exit(5);
     }
 
-    if (*opts == -4)
+    if (atoi(tmp) == -4)
     {
         fprintf(stderr, "No options inputted\n");
 
         exit(6);
     }
+
+    int *opts = tmp;
 
     // Getting all other values
 
@@ -175,7 +177,9 @@ int main(int argc, char *const *argv)
     exit(EXIT_SUCCESS);
 }
 
-int *get_options(int argc, char *const *argv, char *optstr, struct option *longopts)
+
+// Function to parse options
+static void *get_options(int argc, char *const *argv, char *optstr, struct option *longopts)
 {
     // temporary value for longopt to use
     int tmp = -1;
@@ -184,10 +188,8 @@ int *get_options(int argc, char *const *argv, char *optstr, struct option *longo
     int *opts = malloc(2 * sizeof(int));
 
     if (opts == NULL)
-    {
-        int error = -1;
-
-        return &error;
+    {   
+        return "-1";
     }
 
     int optlen = 1;                                       /*Iterable variable*/
@@ -199,11 +201,9 @@ int *get_options(int argc, char *const *argv, char *optstr, struct option *longo
         // Checks for invalid option
         if (opts[optlen] == '?')
         {
-            int error = -2;
-
             free(opts);
 
-            return &error;
+            return "-2";
         }
 
         // Checks for the end of options
@@ -219,11 +219,9 @@ int *get_options(int argc, char *const *argv, char *optstr, struct option *longo
 
         if (temp == NULL)
         {
-            int error = -3;
-
             free(opts);
 
-            return &error;
+            return "-3";
         }
 
         opts = temp;
@@ -232,11 +230,9 @@ int *get_options(int argc, char *const *argv, char *optstr, struct option *longo
     // Checks if no options are inputted
     if (optlen == 0)
     {
-        int error = -4;
-        
         free(opts);
 
-        return &error;
+        return "-4";
     }
 
     opts[0] = optlen;
@@ -245,7 +241,7 @@ int *get_options(int argc, char *const *argv, char *optstr, struct option *longo
 }
 
 // Checks if a string has a char
-bool has_char(char *word)
+static bool has_char(char *word)
 {
     for (int i = 0, len = strlen(word); i < len; i++)
     {
@@ -258,7 +254,7 @@ bool has_char(char *word)
     return false;
 }
 
-int *get_topics(int *options, int optlen)
+static int *get_topics(int *options, int optlen)
 {
     // Pointer to store the topics
     int *topics = malloc(1 * sizeof(int));
