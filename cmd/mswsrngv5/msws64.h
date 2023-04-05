@@ -1,3 +1,7 @@
+#ifndef MSWS64_H
+
+#define MSWS64_H
+
 /**************************************************************************\
 *                                                                          *
 *  Middle-Square Weyl Sequence Random Number Generator (64-bit output)     *
@@ -32,40 +36,10 @@
 \**************************************************************************/
 
 #include <stdint.h>
-#include <stdlib.h>
-#include "../random.h"
 
-uint64_t seed[25000] = {
-   #include "seed.h"
-};
+uint64_t x1 = 0, w1 = 0, s1 = 0;
+uint64_t x2 = 0, w2 = 0, s2 = 0;
 
-uint64_t x1 = seed[21928], w1 = seed[21928], s1 = seed[21928];
-uint64_t x2 = seed[21928], w2 = seed[21928], s2 = seed[12398];
-
-inline static void msws64_s(void)
-{
-   uint8_t bit32 = rand() % 2;
-
-   if (bit32)
-   {
-      jump_ahead(rand());
-
-      uint32_t new_seed1 = msws_uint(SEEDN_MAX);
-      uint32_t new_seed2 = msws_uint(SEEDN_MAX);
-   }
-   else if (!bit32)
-   {
-      jump_ahead2(rand());
-
-      uint64_t new_seed1 = msws_ull(SEEDN_MAX);
-      uint64_t new_seed2 = msws_ull(SEEDN_MAX);
-   }
-
-   x1 = w1 = s1 = seed[new_seed1];
-   x2 = w2 = s2 = seed[new_seed2];
-
-   return;
-}
 
 inline static uint64_t msws64() {
 
@@ -111,3 +85,5 @@ inline static void jump_ahead2(uint64_t m) {
    x2 = x2*x2 + w2; x2 = (x2>>32) | (x2<<32);
 
 }
+
+#endif

@@ -1,3 +1,7 @@
+#ifndef MSWS32_H
+
+#define MSWS32_H
+
 /**************************************************************************\
 *                                                                          *
 *  Middle-Square Weyl Sequence Random Number Generator (32-bit output)     *
@@ -36,37 +40,8 @@
 \**************************************************************************/
 
 #include <stdint.h>
-#include <stdlib.h>
-#include "../random.h"
 
-uint64_t seed[25000] = {
-   #include "seed.h"
-};
-
-uint64_t x = seed[22389], w = seed[22389], s = seed[22389];
-
-// My own local function to dynamically change the seed
-inline static void msws32_s(void)
-{
-   uint8_t bit32 = rand() % 2;
-
-   if (bit32)
-   {
-      jump_ahead(rand());
-
-      uint32_t new_seed = msws_uint(SEEDN_MAX);
-   }
-   else if (!bit32)
-   {
-      jump_ahead2(rand()));
-
-      uint64_t new_seed = msws_ull(SEEDN_MAX);
-   }
-
-   x = w = s = seed[new_seed];
-
-   return;
-}
+uint64_t x = 0, w = 0, s = 0;
 
 inline static uint32_t msws32(void)
 {
@@ -102,3 +77,5 @@ inline static void jump_ahead(uint64_t m)
    x = x*x + w; x = (x>>32) | (x<<32);
 
 }
+
+#endif
