@@ -1,6 +1,4 @@
-#ifndef MSWS32_H
-
-#define MSWS32_H
+#pragma once
 
 /**************************************************************************\
 *                                                                          *
@@ -77,5 +75,3 @@ inline static void jump_ahead(uint64_t m)
    x = x*x + w; x = (x>>32) | (x<<32);
 
 }
-
-#endif

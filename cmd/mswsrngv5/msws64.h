@@ -1,7 +1,4 @@
-#ifndef MSWS64_H
-
-#define MSWS64_H
-
+#pragma once
 /**************************************************************************\
 *                                                                          *
 *  Middle-Square Weyl Sequence Random Number Generator (64-bit output)     *
@@ -85,5 +82,3 @@ inline static void jump_ahead2(uint64_t m) {
    x2 = x2*x2 + w2; x2 = (x2>>32) | (x2<<32);
 
 }
-
-#endif

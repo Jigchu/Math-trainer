@@ -91,3 +91,10 @@ void free_qset(question *qset)
 
     return;
 }
+
+// Fills out answer and prompt part of question, returns true or false based on execution
+static bool set_question(question *question)
+{
+    
+    return true;
+}

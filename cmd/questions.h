@@ -1,7 +1,5 @@
 // Header file for question manipulation and generation
-
-#ifndef QUESTIONS_H
-#define QUESTIONS_H
+#pragma once
 
 // Question struct
 typedef struct question
@@ -14,5 +12,3 @@ typedef struct question
 // Function prototypes
 question *create_qset(int *topics, int q_num);
 void free_qset(question *qset);
-
-#endif

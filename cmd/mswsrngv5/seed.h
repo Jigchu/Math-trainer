@@ -1,6 +1,4 @@
-#ifndef SEED_H
-
-#define SEED_H
+#pragma once
 
 const uint64_t seed[] = {
 	0x9f32e1cbc5e1374b,
@@ -25004,5 +25002,3 @@ const uint64_t seed[] = {
 	0x91ed8362c856273f,
 	0x98a25643fe2c5761,
 };
-
-#endif
