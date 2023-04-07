@@ -36,9 +36,6 @@ int main(int argc, char * const argv[])
     // Stress tests for memory deallocation
     free_t(100000);
 
-    // Test for float rng
-    rngflt_t();
-
     // Rest of the tests (Fully tested functions)
     if (all)
     {
@@ -54,6 +51,9 @@ int main(int argc, char * const argv[])
 
         rng64_t(2421, 4234232);
         rng64_t(0, RAND64MAX - 1);
+        
+        // Test for float rng
+        rngflt_t();
     }
 
 
