@@ -4,14 +4,14 @@
 #include <string.h>
 #include <time.h>
 
-//#include "../mswsrngv5/msws32.h"
-//#include "../mswsrngv5/msws64.h"
+#include "../mswsrngv5/msws32.h"
+#include "../mswsrngv5/msws64.h"
 
 #include "../colours.h"
 #include "../questions.h"
 #include "../questions.c"
 #include "../random.h" 
-//#include "../random.c"
+#include "../random.c"
 
 void create_t(int q_num);
 void free_t(int q_num);
