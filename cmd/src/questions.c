@@ -4,6 +4,7 @@
 #include <stdlib.h>
 
 #include "questions.h"
+#include "random.h"
 
 // Generates question set using iteration so as to save space
 question *create_qset(int *topics, int q_num)
@@ -95,6 +96,19 @@ void free_qset(question *qset)
 // Fills out answer and prompt part of question, returns true or false based on execution
 static bool set_question(question *question)
 {
-    
+    // Choosing whether the question has a single topic or multiple
+    bool single_topic = (bool) msws_uint(0, 1);
+
+    switch (single_topic)
+    {
+        // Question generation for single topic questions
+        case true:
+            break;
+        
+        // Question generation for multi-topic questions
+        case false:
+            break;
+    }
+
     return true;
 }
