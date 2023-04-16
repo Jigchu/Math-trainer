@@ -1,9 +1,11 @@
 # Math-trainer
 A program used to train your mathematical skills
 
-## Documentation
+## Command-line Application
 
-### Getting Options
+### Documentation
+
+#### Getting Options
 The first of input parsing is to get the short options from the options file in the config folder.
 
 ```c
@@ -54,10 +56,23 @@ struct option {
 
 Where, `name` is the name of the long option, `has_arg` being whether the option has `no_argument`, `required_argument` or `optional_argument` which represent the integers `1`, `2` and `3` respectively. The flag is a pointer to an int which will be set to whatever `val` is when found. If `flag` is not `NULL`, `getopt_long()` will return `0`. However, if `flag` is `NULL`, `getopt_long()` will return `val`. `val` is simply the value to return by `getopt_long()` or put into wherever `flag` points to.
 
-***Note: Due to how `getop_long()` is coded, it is mandatory to fill the last value in your pointer or list with `{0, 0, 0, 0}`***
+***Note: Due to how `getop_long()` works, it is mandatory to fill the last value in your pointer or list with `{0, 0, 0, 0}`***
 
-One thing I would like to mention is that I chose `val` for the options in longopts to start counting from `257` is due to how `getopt_long()` returns the character's value based on ASCII for shortopts. Additionally, I set the global vaiable `opterr` to `0` to prevent `getopt_long()` from printing its own error messages. Lastly, I created a variable `long_index` which will be set by `getopt_long()` to the index of the long option that has been found relative to `longopts`. It does not have much use but I may need to use it later. 
+One thing I would like to mention is that I chose `val` for the options in longopts to start counting from `257` is due to how `getopt_long()` returns the character's value based on ASCII for shortopts. Additionally, I set the global vaiable `opterr` to `0` to prevent `getopt_long()` from printing its own error messages.
 
 **If you want to find out more about the family of `getopts`, you should visit the Linux man pages. Here is the [link](https://linux.die.net/man/3/getopt_long)**
 
 The last part of getting the options is actually getting the options themmselves.
+
+- topics contain metadata
+    - the first item in the memory of topics the pointer is the number of items in total including itself
+
+#### Question Sets
+
+##### Question Generation
+- Uses iteration to reduce space used
+- Recursion uses to much space on stack that it caused a segfault
+- Iteration can generate about several times more questions than Recursion
+
+##### Deallocating Questions
+- Uses recursion to reduce time taken
