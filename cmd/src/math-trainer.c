@@ -13,7 +13,7 @@
 #define ARRAY_SIZE(arr)     (sizeof(arr) / sizeof((arr)[0]))
 
 // Function Prototypes (These are usually for input parsing)
-static void *get_options(int argc, char *const *argv, char *optstr, struct option *longopts);
+static int *get_options(int argc, char *const *argv, char *optstr, struct option *longopts, int *option_err);
 static bool has_char(char *word);
 static int *get_topics(int *opts, int optlen);
 
@@ -71,7 +71,8 @@ int main(int argc, char *const *argv)
     // Input parsing
 
     // Gets options
-    void *tmp = get_options(argc, argv, optstr, longopts);
+    int option_err = 0;
+    int *tmp = get_options(argc, argv, optstr, longopts, &option_err);
 
     // Frees optstr
     free(optstr);
@@ -79,14 +80,14 @@ int main(int argc, char *const *argv)
     // Errors handling for get_options
 
     // Memory allocation problems
-    if (atoi(tmp) == -1)
+    if (option_err == -1)
     {
         fprintf(stderr, "Could not allocate memory for options\n");
 
         exit(3);
     }
 
-    if (atoi(tmp) == -3)
+    if (option_err == -3)
     {
         fprintf(stderr, "Could not reallocate memory\n");
 
@@ -94,14 +95,17 @@ int main(int argc, char *const *argv)
     }
 
     // Errors with input
-    if (atoi(tmp) == -2)
+    if (option_err == -2)
     {
-        fprintf(stderr, "Invalid option %s\n", argv[optind]);
+        // This is its own var so that the line would not be too long
+        char *inv_opt = (!(argc == optind) && (argv[optind][0] == '-' && argv[optind][1] != '-')) ? argv[optind] : argv[optind - 1];
+        
+        fprintf(stderr, "Invalid option %s\n", inv_opt);
 
         exit(5);
     }
 
-    if (atoi(tmp) == -4)
+    if (option_err == -4)
     {
         fprintf(stderr, "No options inputted\n");
 
@@ -179,7 +183,7 @@ int main(int argc, char *const *argv)
 
 
 // Function to parse options
-static void *get_options(int argc, char *const *argv, char *optstr, struct option *longopts)
+static int *get_options(int argc, char *const *argv, char *optstr, struct option *longopts, int *option_err)
 {
     // temporary value for longopt to use
     int tmp = -1;
@@ -189,7 +193,9 @@ static void *get_options(int argc, char *const *argv, char *optstr, struct optio
 
     if (opts == NULL)
     {   
-        return "-1";
+        *option_err = -1;
+
+        return NULL;
     }
 
     int optlen = 1;                                       /*Iterable variable*/
@@ -203,7 +209,9 @@ static void *get_options(int argc, char *const *argv, char *optstr, struct optio
         {
             free(opts);
 
-            return "-2";
+            *option_err = -2;
+
+            return NULL;
         }
 
         // Checks for the end of options
@@ -221,7 +229,9 @@ static void *get_options(int argc, char *const *argv, char *optstr, struct optio
         {
             free(opts);
 
-            return "-3";
+            *option_err = -3;
+
+            return NULL;
         }
 
         opts = temp;
@@ -232,7 +242,9 @@ static void *get_options(int argc, char *const *argv, char *optstr, struct optio
     {
         free(opts);
 
-        return "-4";
+        *option_err = -4;
+
+        return NULL;
     }
 
     opts[0] = optlen;
