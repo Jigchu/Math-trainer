@@ -51,11 +51,25 @@ Where, `name` is the name of the long option, `has_arg` being whether the option
 
 ***Note: Due to how `getop_long()` works, it is mandatory to fill the last value in your pointer or list with `{0, 0, 0, 0}`***
 
-One thing I would like to mention is that I chose `val` for the options in longopts to start counting from `257` is due to how `getopt_long()` returns the character's value based on ASCII for shortopts. Additionally, I set the global vaiable `opterr` to `0` to prevent `getopt_long()` from printing its own error messages.
+One thing I would like to mention is that I chose `val` for the options in longopts to start counting from `257` is due to how `getopt_long()` returns the character's value based on ASCII for single-letter options. Additionally, I set the global vaiable `opterr` to `0` to prevent `getopt_long()` from printing its own error messages.
 
 **If you want to find out more about the family of `getopts`, you should visit the Linux man pages. Here is the [link](https://linux.die.net/man/3/getopt_long)**
 
-The last part of getting the options is actually getting the options themmselves.
+The last part of getting the options is actually getting the options themmselves. This process is encapsulated in the creatively-named function: `get_options()`.
+
+The `get_options` function takes in a few arguments: `int argc`, `char *const *argv`, `char *optstr`, `struct option *longopts`, and `int *option_err`and returns a pointer to a `int`, which is a list of the options the user inputted.
+
+**Arguments:**
+- `argc` 
+    - Stands for **argument count**
+    - The number of words the program was called with, including the first `./[program name]`
+    - For example, if you called `./math-trainer -wearenumberone --remember 80` then `argc` will equal 4
+- `argv`
+    - Type of `char * const *` essentially a constant list of strings, `char *`
+    - All the words the program was called with, including the first `./[program name]`.
+    - For example, if you called `./math-trainer -wearenumberone --remember 80` then `argv` will be a list of `"./math-trainer"`, `"-wearenumberone"`, `"--remember"`, and `"80"`
+- `optstr`
+    - 
 
 - topics contain metadata
     - the first item in the memory of topics the pointer is the number of items in total including itself
