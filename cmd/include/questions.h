@@ -9,6 +9,9 @@ typedef struct question
     struct question *next;
 } question;
 
+// Question set
+question *qset = NULL;
+
 // Function prototypes
-question *create_qset(int *topics, int q_num);
+int create_qset(int *topics, int *q_num);
 void free_qset(question *qset);

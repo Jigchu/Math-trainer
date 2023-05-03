@@ -171,8 +171,6 @@ int main(int argc, char *const *argv)
         exit(11);
     }
 
-    question *qset = create_qset(topics, q_num);
-
     // Frees all memory
     free(opts);
     free(topics);
