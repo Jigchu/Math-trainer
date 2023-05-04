@@ -45,6 +45,8 @@ static int qns_factory(create_arg args)
         // Generates question
         question *current_question = malloc(sizeof(question));
         current_question->next = NULL;
+        current_question->answer = NULL;
+        current_question->prompt = NULL;
 
         if (current_question == NULL)
         {
