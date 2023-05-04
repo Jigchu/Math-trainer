@@ -13,15 +13,25 @@
 void create_t(int q_num)
 {
     // Question generation
-    int topics[] = {'q'};
+    int topics[] = {110};
 
-    question *qset = create_qset(topics, q_num);
+    create_arg create_args = {topics, q_num};
+
+    int retval;
+
+    do
+    {
+        retval = create_qset(create_args);
+    } while (retval != q_num);
+    
 
     if (qset == NULL)
     {
         red();
         fprintf(stdout, ":( Memory could not be allocated succesfully\n");
         reset();
+
+        return;
     }
 
     int qctr = 0;
@@ -48,7 +58,7 @@ void create_t(int q_num)
         reset();
     }
 
-    free_qset(qset);
+    free_qset();
 
     return;
 }
@@ -58,10 +68,11 @@ void free_t(int q_num)
 {
     // Generating questions
     int topics[] = {110};
-    question *qset = create_qset(topics , q_num);
+    create_arg create_args = {topics, q_num};
+    create_qset(create_args);
 
     // Freeing questions
-    free_qset(qset);
+    free_qset();
 
     green();
     fprintf(stdout, ":) free_qset() successfully executed with %d questions\n", q_num);

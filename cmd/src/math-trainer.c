@@ -174,7 +174,7 @@ int main(int argc, char *const *argv)
     // Frees all memory
     free(opts);
     free(topics);
-    free_qset(qset);
+    free_qset();
 
     exit(EXIT_SUCCESS);
 }

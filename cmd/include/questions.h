@@ -9,9 +9,16 @@ typedef struct question
     struct question *next;
 } question;
 
+// Struct when using create_q with multi-threading
+typedef struct create_arg
+{
+    int *topic;
+    int q_num;
+} create_arg;
+
 // Question set
 question *qset = NULL;
 
 // Function prototypes
-int create_qset(int *topics, int *q_num);
-void free_qset(question *qset);
+int create_qset(create_arg args);
+void free_qset(void);
