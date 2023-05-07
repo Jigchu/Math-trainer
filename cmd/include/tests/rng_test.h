@@ -2,6 +2,9 @@
 #pragma once
 
 #include <stdint.h>
+#include "random.h"
+
+extern mswsrng rng;
 
 void seed_t(void);
 void rng32inv_t(void);

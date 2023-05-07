@@ -1,6 +1,6 @@
 #pragma once
 
-const uint64_t seed[] = {
+const uint64_t seeds[] = {
 	0x9f32e1cbc5e1374b,
 	0x278c5a4d8419fe6b,
 	0x38ea2514b48de29f,

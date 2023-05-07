@@ -5,14 +5,14 @@
 
 #include "../src/random.c"
 
-#include "mswsrngv5/msws32.h"
-#include "mswsrngv5/msws64.h"
+#include "mswsrng/mswsrng.h"
 
 #include "tests/rng_test.h"
 
 #include "colours.h"
 #include "random.h" 
 
+mswsrng rng;
 
 // A test to check whether the functions generating and checking seed.h works
 void seed_t(void)
@@ -58,7 +58,7 @@ void seed_t(void)
 // Makes sure invalid output cases work
 void rng32inv_t(void)
 {
-    uint32_t result = msws_uint(0, RAND32MAX);
+    uint32_t result = rng.rand_uint(&rng.seed, 0, RAND32MAX);
 
     if (result == RAND32MAX)
     {
@@ -73,7 +73,7 @@ void rng32inv_t(void)
         reset();
     }
 
-    result = msws_ull(RAND32MAX, RAND32MAX);
+    result = rng.rand_uint(&rng.seed, RAND32MAX, RAND32MAX);
 
     if (result == RAND32MAX)
     {
@@ -88,7 +88,7 @@ void rng32inv_t(void)
         reset();
     }
 
-    result = msws_ull(1, 0);
+    result = rng.rand_uint(&rng.seed, 1, 0);
 
     if (result == RAND32MAX)
     {
@@ -108,7 +108,7 @@ void rng32inv_t(void)
 
 void rng64inv_t(void)
 {
-    uint64_t result = msws_ull(0, RAND64MAX);
+    uint64_t result = rng.rand_ullong(&rng.seed, 0, RAND64MAX);
 
     if (result == RAND64MAX)
     {
@@ -123,7 +123,7 @@ void rng64inv_t(void)
         reset();
     }
 
-    result = msws_ull(RAND64MAX, RAND64MAX);
+    result = rng.rand_ullong(&rng.seed, RAND64MAX, RAND64MAX);
 
     if (result == RAND64MAX)
     {
@@ -138,7 +138,7 @@ void rng64inv_t(void)
         reset();
     }
 
-    result = msws_ull(1, 0);
+    result = rng.rand_ullong(&rng.seed, 1, 0);
 
     if (result == RAND64MAX)
     {
@@ -159,9 +159,7 @@ void rng64inv_t(void)
 // Makes sure the eng works
 void rng32_t(uint32_t min, uint32_t max)
 {
-    msws32_s();
-
-    uint32_t result = msws_uint(min, max);
+    uint32_t result = rng.rand_uint(&rng.seed, min, max);
 
     if (result >= min && result <= max)
     {
@@ -181,9 +179,7 @@ void rng32_t(uint32_t min, uint32_t max)
 
 void rng64_t(uint64_t min, uint64_t max)
 {
-    msws64_s();
-
-    uint64_t result = msws_ull(min, max);
+    uint64_t result = rng.rand_ullong(&rng.seed, min, max);
 
     if (result >= min && result <= max)
     {
@@ -203,10 +199,7 @@ void rng64_t(uint64_t min, uint64_t max)
 
 void rngflt_t(void)
 {
-    msws32_s();
-    msws64_s();
-
-    long double result = msws_f32();
+    long double result = rng.rand_f32(&rng.seed);
 
     if (result > 0 && result < 1)
     {
@@ -220,7 +213,7 @@ void rngflt_t(void)
         fprintf(stdout, ":( msws_f32 float rng does not work. Result: %Lf\n", result);
     }
 
-    result = msws_f53();
+    result = rng.rand_f53(&rng.seed);
 
     if (result > 0 && result < 1)
     {
@@ -235,7 +228,7 @@ void rngflt_t(void)
         reset();
     }
 
-    long double *results = msws_dualf32();
+    long double *results = rng.rand_2f32(&rng.seed);
 
     if (results[0] > 0 && results[1] > 0 && results[0] < 1 && results[1] < 1)
     {

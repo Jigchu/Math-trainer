@@ -16,6 +16,7 @@ int main(int argc, char * const argv[])
     bool all = (argc == 2) && (!strcmp(argv[argc - 1], "--all")) ? true : false;
 
     srand(time(NULL));
+    rng = msws_init(true);
 
     // Current tests (These tests are for functions that have not been fully tested yet)
     // Tests for question set generation

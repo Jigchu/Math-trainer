@@ -5,7 +5,6 @@
 #include <stdlib.h>
 
 #include "questions.h"
-#include "random.h"
 
 // Number of threads used by create_qset
 #define THREAD_NUM 4
@@ -14,23 +13,9 @@ volatile static question *last_question = NULL;
 pthread_mutex_t qset_mutex;
 
 // Fills out answer and prompt part of question, returns true or false based on execution
-static bool set_question(question *question, int *topics)
+static int set_question(question *question, int *topics)
 {
-    // Choosing whether the question has a single topic or multiple
-    bool single_topic = (bool) msws_uint(0, 1);
-
-    switch (single_topic)
-    {
-        // Question generation for single topic questions
-        case true:
-            break;
-        
-        // Question generation for multi-topic questions
-        case false:
-            break;
-    }
-
-    return true;
+    return 0;
 }
 
 // Generates question into qset in question.h. Can be multi-threaded.
@@ -54,7 +39,7 @@ static int qns_factory(create_arg args)
         }
 
         // Generate prompt and answers
-        if (!set_question(current_question, args.topic))
+        if (set_question(current_question, args.topic))
         {
             return -2;
         }
@@ -138,6 +123,15 @@ int create_qset(create_arg args)
                 if (pthread_join(thread_ids[i], &retval))
                 {
                     return -2;
+                }
+
+                if (retval == -1)
+                {
+                    return -3;
+                }
+                else if (retval == -2)
+                {
+                    return -4;
                 }
 
                 // Reset thread ID
