@@ -1,7 +1,7 @@
 # Ignore tests
 .vscode
 
-# Ignore executables and makefiles
+# Ignore executables, makefiles and other tooling to streamline the make/git process
 *.exe
 *.mk
 *.sh
