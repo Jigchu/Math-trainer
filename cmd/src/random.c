@@ -162,6 +162,22 @@ bool seed_verifier(void)
 }
 
 
+
+// Generates one seed for mswsrng
+int msws_seed()
+{
+    rng_seed seed = {
+        seeds[14622], seeds[14622], seeds[14622],
+        seeds[22730], seeds[22730], seeds[22730]
+    };
+    bool type = rand() % 2;
+
+    jump_ahead(&seed, rand(), type);
+
+    return type ? msws_ull(&seed, 0, SEEDN_MAX - 1) : msws_uint(&seed, 0, SEEDN_MAX - 1);
+}
+
+
 mswsrng msws_init(bool type)
 {
     mswsrng retval;
@@ -179,19 +195,4 @@ mswsrng msws_init(bool type)
     retval.seed.x2 = retval.seed.w2 = retval.seed.s2 = type ? seeds[msws_seed()] : 0;
     
     return retval;
-}
-
-
-// Generates one seed for mswsrng
-int msws_seed()
-{
-    rng_seed seed = {
-        seeds[14622], seeds[14622], seeds[14622],
-        seeds[22730], seeds[22730], seeds[22730]
-    };
-    bool type = rand() % 2;
-
-    jump_ahead(&seed, rand(), type);
-
-    return type ? msws_ull(&seed, 0, SEEDN_MAX - 1) : msws_uint(&seed, 0, SEEDN_MAX - 1);
 }
