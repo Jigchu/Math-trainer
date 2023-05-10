@@ -69,7 +69,19 @@ The `get_options` function takes in a few arguments: `int argc`, `char *const *a
     - All the words the program was called with, including the first `./[program name]`.
     - For example, if you called `./math-trainer -wearenumberone --remember 80` then `argv` will be a list of `"./math-trainer"`, `"-wearenumberone"`, `"--remember"`, and `"80"`
 - `optstr`
-    - 
+    - A `char *` or `string` that contains all the short options that can be accepted in the command-line arguments.
+    - This means that if `optstr` is `"wearenumberone"`, the option `-e` will be valid while the option `-q` willl not.
+- `longopts`
+    - A `struct option *` or essentially a list of `struct option` types
+    - This is the aforementioned `static struct option[]` mentioned earlier in this page. This variable will dictate which long options (denoted by `--`) will be accepted in the command-line arguments.
+    - For example, this means that if one of the entries of longopts is `remember` then the option `--remember` will be accepted while `--remmber` will not.
+- `option_err`
+    - This is a `pointer` to an `int` type.
+    - `option_err` is the pointer to the variable where `get_options` places its `exit_status`.
+    - For example, this means if `get_options` executed successfully, the variable pointed to by `option_err` will be set to 0.
+
+**Code**
+In the first line of code, I initialise a temporary variable. This variable serves literally no purpose other than as a placeholder for the argument `idx` for the functino `getopt_long()`.
 
 - topics contain metadata
     - the first item in the memory of topics the pointer is the number of items in total including itself
