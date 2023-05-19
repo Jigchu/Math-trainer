@@ -32,17 +32,17 @@ inline static uint64_t msws64(rng_seed *seed) {
 }
 
 
-inline static void jump_ahead(rng_seed *seed, uint64_t m, bool type) {
+inline static void jump_ahead(rng_seed *seed, uint64_t m, bool msws64) {
     uint64_t y1;
 
-    if (!type)
+    if (!msws64)
     {
         seed->x1 = seed->w1 += (m * seed->s1); y1 = seed->w1 + seed->s1;
         seed->x1 = seed->x1*seed->x1 + seed->w1; seed->x1 = (seed->x1>>32) | (seed->x1<<32);
         seed->x1 = seed->x1*seed->x1 + y1;       seed->x1 = (seed->x1>>32) | (seed->x1<<32);
         seed->x1 = seed->x1*seed->x1 + seed->w1; seed->x1 = (seed->x1>>32) | (seed->x1<<32);
     }
-    else if (type)
+    else if (msws64)
     {
         uint64_t y2;
 
