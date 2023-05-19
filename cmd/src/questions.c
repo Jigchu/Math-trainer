@@ -75,7 +75,6 @@ int create_qset(create_arg args)
     // Initialise mutex
     pthread_mutex_init(&qset_mutex, NULL);
 
-    
     do
     {
         // Calculate the number of questions to be generated per thread

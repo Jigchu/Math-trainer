@@ -282,29 +282,26 @@ static int *get_topics(int *options, int optlen)
         // Check if it is a shortopt or longopt
         int option = options[i];
 
-        if (option < 256)
+        if (option > 255)
         {
-            // Reallocate memory with realloc
-            int *tmp = realloc(topics, (len + 1) * sizeof(int));
-
-            if (tmp == NULL)
-            {
-                // Free memory used by function
-                if (topics != NULL)
-                {
-                    free(topics);
-                }
-
-                return NULL;
-            }
-
-            topics = tmp;
-
-            // Adds topic
-            topics[i + 1] = option;
-
-            len++;
+            continue;
         }
+
+        // Reallocate memory with realloc
+        int *tmp = realloc(topics, (len + 1) * sizeof(int));
+
+        if (tmp == NULL)
+        {
+            free(topics);
+            return NULL;
+        }
+
+        topics = tmp;
+
+        // Adds topic
+        topics[i + 1] = option;
+
+        len++;
     }
 
     // Store the metadata
