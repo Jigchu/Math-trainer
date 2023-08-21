@@ -7,5 +7,5 @@
 [**Options**](https://github.com/Jigchu/Math-trainer/wiki/Options)
 
 # Further Reading
-## Middle-Square Weyl Sequence RNG
+### Middle-Square Weyl Sequence RNG
 [**Docs**](https://github.com/Jigchu/Math-trainer/blob/main/docs/cmd/arxiv.pdf)
