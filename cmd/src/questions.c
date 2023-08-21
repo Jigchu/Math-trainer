@@ -9,7 +9,17 @@
 // Number of threads used by create_qset
 #define THREAD_NUM 4
 
+// Question struct
+typedef struct question
+{
+    char *prompt;
+    char *answer;
+    struct question *next;
+} question;
+
+question *qset = NULL;
 volatile static question *last_question = NULL;
+
 pthread_mutex_t qset_mutex;
 
 // Fills out answer and prompt part of question, returns true or false based on execution

@@ -10,22 +10,16 @@
 #include <stdbool.h>
 #include <stdint.h>
 
-#include <mswsrng/mswsrng.h>
+// A struct for the seed for the rng
+typedef struct mswsrng rng;
 
 
-typedef struct mswsrng
-{
-	rng_seed seed;
-
-	uint32_t (*rand_uint)(rng_seed *, uint32_t, uint32_t);
-	uint64_t (*rand_ullong)(rng_seed *, uint64_t, uint64_t);
-
-	long double (*rand_f32)(rng_seed *);
-	long double *(*rand_2f32)(rng_seed *);
-	long double (*rand_f53)(rng_seed *)
-} mswsrng;
-
-
+rng *msws_init(bool u64);
+void free_rng(rng *in);
+uint32_t rand_u32(rng *seed, uint32_t min, uint32_t max);
+uint64_t rand_u64(rng *seed, uint64_t min, uint64_t max);
+long double rand_f32(rng *seed);
+long double *rand_2f32(rng *seed);
+long double rand_f53(rng *seed);
 bool gen_seed(void);
 bool seed_verifier(void);
-mswsrng msws_init(bool type);

@@ -11,9 +11,68 @@
 
 #include "mswsrng/mswsrng.h"
 
+typedef struct mswsrng
+{
+    rng_seed *seed;
+} rng;
+
+// Generates one seed for mswsrng
+static int msws_seed()
+{
+    rng_seed s = {
+        seeds[14622], seeds[14622], seeds[14622],
+        seeds[22730], seeds[22730], seeds[22730]
+    };
+
+    rng seed = {
+        &s
+    };
+
+    bool u64 = rand() % 2;
+
+    jump_ahead(seed.seed, rand(), u64);
+
+    return u64 ? rand_u64(&seed, 0, SEEDN_MAX - 1) : rand_u32(&seed, 0, SEEDN_MAX - 1);
+}
+
+
+rng *msws_init(bool u64)
+{
+    rng *retval = malloc(sizeof(rng));
+    if (retval == NULL)
+    {
+        return NULL;
+    }
+    
+
+    retval->seed = malloc(sizeof(rng_seed));
+    if (retval->seed == NULL)
+    {
+        return NULL;
+    }
+    
+
+    retval->seed->s1 = retval->seed->w1 = retval->seed->x1 = seeds[msws_seed()];
+    retval->seed->s2 = retval->seed->w2 = retval->seed->x2 = u64 ? seeds[msws_seed()] : 0;
+
+    return retval;
+}
+
+void free_rng(rng *in)
+{
+    in->seed->s1 = in->seed->s2 = in->seed->w1 = in->seed->w2 = in->seed->x1 = in->seed->x2 = 0;
+
+    free(in->seed);
+
+    in->seed = NULL;
+
+    free(in);
+
+    return;
+}
 
 // Generates a random unsigned int from min to max inclusive using mswsrng
-uint32_t msws_uint(rng_seed *seed, uint32_t min, uint32_t max)
+uint32_t rand_u32(rng *seed, uint32_t min, uint32_t max)
 {
     // Check for invalid input
     if ((max >= RAND32MAX && min == 0) || min >= RAND32MAX || min > max)
@@ -28,7 +87,7 @@ uint32_t msws_uint(rng_seed *seed, uint32_t min, uint32_t max)
 
     do
     {
-        result = msws32(seed) / divisor;
+        result = msws32(seed->seed) / divisor;
     } while (result > (range - 1));
 
     return result + min;
@@ -36,7 +95,7 @@ uint32_t msws_uint(rng_seed *seed, uint32_t min, uint32_t max)
 
 
 // Generates a random unsigned long long from 0 to max inclusive using mswsrng
-uint64_t msws_ull(rng_seed *seed, uint64_t min, uint64_t max)
+uint64_t rand_u64(rng *seed, uint64_t min, uint64_t max)
 {
     // Check for invalid input
     if ((max >= RAND64MAX && min == 0) || min >= RAND64MAX || min > max)
@@ -51,7 +110,7 @@ uint64_t msws_ull(rng_seed *seed, uint64_t min, uint64_t max)
 
     do
     {
-        result = msws64(seed) / divisor;
+        result = msws64(seed->seed) / divisor;
     } while (result > (range - 1));
 
     return result + min;
@@ -59,12 +118,12 @@ uint64_t msws_ull(rng_seed *seed, uint64_t min, uint64_t max)
 
 
 // Generates a 32 bit precise floating point number between 0 and 1
-long double msws_f32(rng_seed *seed)
+long double rand_f32(rng *seed)
 {
     long double result;
     do
     {
-        result = msws32(seed) / (long double) two32;
+        result = msws32(seed->seed) / (long double) two32;
     } while (result <= 0 || result >= 1);
 
     return result;
@@ -72,7 +131,7 @@ long double msws_f32(rng_seed *seed)
 
 
 // Generates two 32-bit precise floating point numbers between 0 and 1 with msws64
-long double *msws_dualf32(rng_seed *seed)
+long double *rand_2f32(rng *seed)
 {
     long double *results = malloc(sizeof(long double) * 2);
     if (results == NULL)
@@ -85,7 +144,7 @@ long double *msws_dualf32(rng_seed *seed)
         uint32_t i32[2];
     } u;
 
-    u.i64 = msws64(seed);
+    u.i64 = msws64(seed->seed);
 
     for (int i = 0; i < 2; i++)
     {
@@ -100,13 +159,13 @@ long double *msws_dualf32(rng_seed *seed)
 
 
 // Generates a 53-bit precise floating point number between 0 and 1
-long double msws_f53(rng_seed *seed)
+long double rand_f53(rng *seed)
 {
     long double result;
     
     do
     {
-        result = (long double) msws64(seed) / two53;
+        result = (long double) msws64(seed->seed) / two53;
     } while (result <= 0 || result >= 1);
     
 
@@ -159,40 +218,4 @@ bool seed_verifier(void)
     long long offset = ftell(fp);
 
     return offset != char_count;
-}
-
-
-
-// Generates one seed for mswsrng
-int msws_seed()
-{
-    rng_seed seed = {
-        seeds[14622], seeds[14622], seeds[14622],
-        seeds[22730], seeds[22730], seeds[22730]
-    };
-    bool type = rand() % 2;
-
-    jump_ahead(&seed, rand(), type);
-
-    return type ? msws_ull(&seed, 0, SEEDN_MAX - 1) : msws_uint(&seed, 0, SEEDN_MAX - 1);
-}
-
-
-mswsrng msws_init(bool type)
-{
-    mswsrng retval;
-
-    // Load the functions
-    retval.rand_uint = &msws_uint;
-    retval.rand_ullong = &msws_ull;
-
-    retval.rand_f32 = &msws_f32;
-    retval.rand_2f32 = &msws_dualf32;
-    retval.rand_f53 = &msws_f53;
-
-    // Set the seed
-    retval.seed.x1 = retval.seed.w1 = retval.seed.s1 = seeds[msws_seed()];
-    retval.seed.x2 = retval.seed.w2 = retval.seed.s2 = type ? seeds[msws_seed()] : 0;
-    
-    return retval;
 }

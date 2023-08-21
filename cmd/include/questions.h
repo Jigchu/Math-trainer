@@ -1,13 +1,8 @@
 // Header file for question manipulation and generation
 #pragma once
 
-// Question struct
-typedef struct question
-{
-    char *prompt;
-    char *answer;
-    struct question *next;
-} question;
+// Struct for question
+typedef struct question question;
 
 // Struct when using create_q with multi-threading
 typedef struct create_arg
@@ -17,7 +12,7 @@ typedef struct create_arg
 } create_arg;
 
 // Question set
-question *qset = NULL;
+extern question *qset;
 
 // Function prototypes
 int create_qset(create_arg args);
